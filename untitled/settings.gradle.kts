@@ -1,1 +1,1 @@
-rootProject.name = "untitled"
+rootProject.name = "Backend-API-for-Opening-Bank-account"
