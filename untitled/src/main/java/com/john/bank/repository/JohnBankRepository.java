@@ -1,5 +1,7 @@
 package com.john.bank.repository;
 
+import com.john.bank.models.Customer;
+
 public interface JohnBankRepository {
-    public void addCustomer(String customerName, String password);
+    public void addCustomer(Customer customer);
 }

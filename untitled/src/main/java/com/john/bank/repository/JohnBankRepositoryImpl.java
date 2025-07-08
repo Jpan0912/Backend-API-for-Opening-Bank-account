@@ -1,5 +1,6 @@
 package com.john.bank.repository;
 
+import com.john.bank.models.Customer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -20,14 +21,13 @@ public class JohnBankRepositoryImpl implements JohnBankRepository{
     }
 
     @Override
-    public void addCustomer(String customerName, String password) {
-        String hashed = new BCryptPasswordEncoder().encode(password);
+    public void addCustomer(Customer customer) {
         String sql = "INSERT INTO users (name, password) VALUES (?, ?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, customerName);
-            statement.setString(2, hashed);
+            statement.setString(1, customer.getName());
+            statement.setString(2, customer.getPassword());
             statement.executeUpdate();
 
         } catch (SQLException e) {
