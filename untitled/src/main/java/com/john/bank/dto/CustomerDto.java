@@ -3,7 +3,7 @@ package com.john.bank.dto;
 import lombok.Getter;
 
 @Getter
-public class CustomerDTO {
+public class CustomerDto {
     private String name;
     private String password;
 }

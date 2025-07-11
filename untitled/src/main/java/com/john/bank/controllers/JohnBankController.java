@@ -1,15 +1,16 @@
 package com.john.bank.controllers;
 
-import com.john.bank.dto.CustomerDTO;
+import com.john.bank.dto.CustomerDto;
 import com.john.bank.dto.CustomerResponseDto;
-import com.john.bank.models.Customer;
+import com.john.bank.dto.LoginRequestDto;
+import com.john.bank.dto.LoginResponseDto;
 import com.john.bank.service.JohnBankService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class JohnBankController {
 
     @PostMapping
     @RequestMapping("/customers")
-    public ResponseEntity<CustomerResponseDto> registerCustomer(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<CustomerResponseDto> registerCustomer(@RequestBody CustomerDto customerDTO) {
 
         log.info("Initialising customer registration");
         try {
@@ -49,5 +50,15 @@ public class JohnBankController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new CustomerResponseDto(null, "Missing request body"));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginDto){
+        try {
+            String token = johnBankService.authenticateCustomer(loginDto);
+            return ResponseEntity.ok(new LoginResponseDto(token));
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDto("Invalid credentials"));
+        }
     }
 }

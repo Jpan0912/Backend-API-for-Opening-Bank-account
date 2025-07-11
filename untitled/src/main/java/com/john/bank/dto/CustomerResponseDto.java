@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class CustomerResponseDto {
-    String customerName;
-    String accountCreationStatus;
+    private String customerName;
+    private String accountCreationStatus;
 }

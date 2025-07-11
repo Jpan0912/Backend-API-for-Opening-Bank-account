@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -36,4 +37,30 @@ public class JohnBankRepositoryImpl implements JohnBankRepository{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Customer getCustomerByName(String name) {
+        String sql = "SELECT * FROM users WHERE name =?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+
+            statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                Customer customer = new Customer();
+                customer.setId(rs.getLong("id"));
+                customer.setName(rs.getString("name"));
+                customer.setPassword(rs.getString("password"));
+                return customer;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving customer", e);
+        }
+    }
 }
+
