@@ -27,8 +27,7 @@ public class JohnBankController {
         this.johnBankService = johnBankService;
     }
 
-    @PostMapping
-    @RequestMapping("/customers")
+    @PostMapping("/customer")
     public ResponseEntity<CustomerResponseDto> registerCustomer(@RequestBody CustomerDto customerDTO) {
 
         log.info("Initialising customer registration");
