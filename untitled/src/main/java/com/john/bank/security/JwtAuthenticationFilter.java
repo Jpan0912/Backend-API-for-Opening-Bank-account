@@ -1,11 +1,14 @@
 package com.john.bank.security;
 
+import com.john.bank.service.JohnBankService;
 import com.john.bank.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,6 +21,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private static final Logger log = LoggerFactory.getLogger(JohnBankService.class);
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -30,6 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String token = extractTokenFromRequest(request);
+        log.info("JWT Filter triggered for URI: {}", request.getRequestURI());
+        log.info("Raw Authorization header: {}", request.getHeader("Authorization"));
+        log.info("Extracted token: {}", token);
 
         try {
             if (token != null && jwtUtil.validateToken(token)) {

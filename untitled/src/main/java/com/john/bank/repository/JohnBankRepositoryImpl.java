@@ -1,6 +1,7 @@
 package com.john.bank.repository;
 
 import com.john.bank.models.Customer;
+import com.john.bank.models.Account;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -36,6 +37,29 @@ public class JohnBankRepositoryImpl implements JohnBankRepository{
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void addAccount(Account account) {
+       try (Connection conn = dataSource.getConnection()) {
+           conn.setAutoCommit(false);
+
+           try (PreparedStatement insertStmt = conn.prepareStatement(
+               "INSERT INTO accounts (account_number) VALUES(?)")) {
+                insertStmt.setString(1, account.accountNumber);
+                insertStmt.executeUpdate();
+           }
+           try (PreparedStatement updateStmt = conn.prepareStatement(
+                   "UPDATE users SET account_number = ? WHERE name = ?")) {
+                updateStmt.setString(1, account.accountNumber);
+                updateStmt.setString(2, account.accountName);
+                updateStmt.executeUpdate();
+           }
+           conn.commit();
+       } catch (SQLException e){
+           e.printStackTrace();
+           throw new RuntimeException("Error adding account", e);
+       }
     }
 
     @Override

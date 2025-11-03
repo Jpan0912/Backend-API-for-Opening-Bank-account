@@ -1,7 +1,9 @@
 package com.john.bank.service;
 
+import com.john.bank.dto.AccountDto;
 import com.john.bank.dto.CustomerDto;
 import com.john.bank.dto.LoginRequestDto;
+import com.john.bank.models.Account;
 import com.john.bank.models.Customer;
 import com.john.bank.util.JwtUtil;
 import com.john.bank.repository.JohnBankRepository;
@@ -25,6 +27,20 @@ public class JohnBankService {
         this.bCryptPasswordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
+
+    public void addAccountToRepository(AccountDto accountDto, String apiToken){
+
+        String accountName = jwtUtil.getUsernameFromToken(apiToken);
+        String accountNumber = accountDto.getAccountNumber();
+        log.info("Adding account {} to user: {}",accountNumber, accountName);
+
+        Account account = new Account();
+        account.setAccountName(accountName);
+        account.setAccountNumber(accountNumber);
+
+        johnBankRepository.addAccount(account);
+    }
+
 
     public void addCustomerToRepository(CustomerDto customerDto){
         String customerName = customerDto.getName();
